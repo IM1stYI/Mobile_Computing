@@ -21,13 +21,12 @@ shell({ active: 'profil', title: 'Profil Akun' });
 const P = APP.admin;
 $('#content').innerHTML = `<div class="pgrid">
 <section class="card pc"><div class="big">🛡️</div><h2 id="pn">${P.nama}</h2><span class="role" style="margin-bottom:20px">@ADMIN</span>
-<div class="il"><div><small>Username</small><b>${P.username}</b></div><div><small>Hak akses</small><b>Administrator Sarpras (penuh)</b></div></div>
-<a class="b" href="logout.php" style="margin-top:22px;padding:11px;color:#dc2626;border-color:#fecaca;display:block">🚪 Keluar dari Akun</a></section>
+<div class="il"><div><small>Username</small><b>${P.username}</b></div><div><small>Hak akses</small><b>Administrator Sarpras (penuh)</b></div></div></section>
 <div style="display:flex;flex-direction:column;gap:24px">
 <form class="card pf" id="fp" novalidate><div><h2>👤 Informasi Profil</h2><p>Perbarui nama petugas administrator. Username tidak dapat diubah.</p></div>
 <div class="row2"><div><label for="n">Nama Lengkap <i>*</i></label><input id="n" value="${P.nama}" maxlength="100"></div><div><label for="u">Username</label><input id="u" value="${P.username}" readonly></div></div>
 <div class="ft"><button class="b p" type="submit">💾 Simpan Perubahan</button></div></form>
-<form class="card pf" id="fw" novalidate><div><h2>🔒 Ubah Password</h2><p>Gunakan minimal 6 karakter dan jangan bagikan password kepada siapa pun.</p></div>
+<form class="card pf" id="fw" novalidate><div><h2> Ubah Password</h2><p>Gunakan minimal 6 karakter dan jangan bagikan password kepada siapa pun.</p></div>
 <label for="w0">Password Saat Ini <i>*</i></label><input id="w0" type="password" autocomplete="current-password">
 <div class="row2"><div><label for="w1">Password Baru <i>*</i></label><input id="w1" type="password" autocomplete="new-password"></div><div><label for="w2">Konfirmasi Password Baru <i>*</i></label><input id="w2" type="password" autocomplete="new-password"></div></div>
 <label class="chk"><input type="checkbox" id="sh"> Tampilkan password</label><div class="ft"><button class="b bl" type="submit">🔑 Ubah Password</button></div></form></div></div>`;
