@@ -1,0 +1,5 @@
+# Folder upload: jangan pernah menjalankan script di sini
+<FilesMatch "\.(php|phtml|php3|php4|php5|phar|pl|py|cgi)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes -ExecCGI

@@ -1,0 +1,8 @@
+# Pengaturan pribadi (berisi user/password database) - JANGAN di-commit
+app/config.php
+# File yang diunggah pengguna
+uploads/*
+!uploads/.gitkeep
+!uploads/.htaccess
+.DS_Store
+Thumbs.db
