@@ -1,4 +1,3 @@
-
 /* Admin Meta Sarpras - kerangka tampilan + helper */
 
 const $ = s => document.querySelector(s);
@@ -29,8 +28,9 @@ const MENU = [
 ];
 
 function shell(o) {
-    const b = APP.badges || {};
-    const P = APP.admin;
+    const app = typeof APP !== 'undefined' ? APP : { badges: o.badges || {}, admin: { nama: 'Admin', username: 'admin' }, date: o.date || '', csrf: '', today: new Date().toISOString().slice(0, 10) };
+    const b = app.badges || {};
+    const P = app.admin || { nama: 'Admin', username: 'admin' };
 
     document.body.innerHTML = `
     <div class="scrim" id="scrim"></div>
@@ -90,7 +90,7 @@ function shell(o) {
             <div class="hact">
 
                 <div class="date">
-                    📅 ${APP.date}
+                    📅 ${app.date || o.date || ''}
                 </div>
 
                 <div class="user-dropdown">
