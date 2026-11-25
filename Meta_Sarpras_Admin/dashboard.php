@@ -2,7 +2,7 @@
 require __DIR__ . '/../app/bootstrap.php'; require __DIR__ . '/partials.php'; admin_require();
 $sp = Pengaduan::stat(); $sl = Peminjaman::stat();
 admin_open('Dashboard Admin Sarpras', [
-    'stat' => ['pengaduan' => $sp['total'], 'baru' => $sp['baru'], 'pinjam' => $sl['total'], 'jalan' => $sl['jalan'], 'denda' => $sl['denda'], 'akun' => Mahasiswa::count()],
+    'stat' => ['pengaduan' => $sp['total'], 'baru' => $sp['baru'], 'pinjam' => $sl['total'], 'jalan' => $sl['jalan'], 'denda' => $sl['denda'], 'akun' => User::countMahasiswa()],
     'pengaduan' => array_slice(Pengaduan::semua(), 0, 2), 'peminjaman' => array_slice(Peminjaman::semua(), 0, 4),
 ]); ?>
 <script>

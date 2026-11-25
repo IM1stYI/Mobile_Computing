@@ -84,13 +84,21 @@ function csrf_ok(?string $t): bool { return is_string($t) && hash_equals($_SESSI
 // ---------- autentikasi ----------
 function mhs_user(): ?array {
     static $u = false;
-    if ($u === false) $u = isset($_SESSION['mhs_id']) ? Mahasiswa::find((int)$_SESSION['mhs_id']) : null;
+    if ($u === false) {
+        $id = isset($_SESSION['mhs_id']) ? (int)$_SESSION['mhs_id'] : 0;
+        $u = $id ? User::find($id) : null;
+        if ($u && $u['role'] !== 'mahasiswa') $u = null;
+    }
     return $u;
 }
 function mhs_require(): array { $u = mhs_user(); if (!$u) redirect('login.php'); return $u; }
 function admin_user(): ?array {
     static $u = false;
-    if ($u === false) $u = isset($_SESSION['admin_id']) ? Admin::find((int)$_SESSION['admin_id']) : null;
+    if ($u === false) {
+        $id = isset($_SESSION['admin_id']) ? (int)$_SESSION['admin_id'] : 0;
+        $u = $id ? User::find($id) : null;
+        if ($u && $u['role'] !== 'admin') $u = null;
+    }
     return $u;
 }
 function admin_require(): array { $u = admin_user(); if (!$u) redirect('login.php'); return $u; }
@@ -111,4 +119,4 @@ function upload_foto(string $field): ?string {
     return $name;
 }
 
-foreach (['Mahasiswa', 'Admin', 'Pengaduan', 'Tanggapan', 'Peminjaman'] as $m) require_once __DIR__ . "/models/$m.php";
+foreach (['User', 'Pengaduan', 'Tanggapan', 'Peminjaman'] as $m) require_once __DIR__ . "/models/$m.php";

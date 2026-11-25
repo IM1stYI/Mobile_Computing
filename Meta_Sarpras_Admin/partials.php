@@ -5,7 +5,7 @@ function admin_open(string $title, array $data = [], string $head = ''): void {
     $menunggu = (int) db()->query("SELECT COUNT(*) FROM peminjaman WHERE status_peminjaman='Menunggu Konfirmasi'")->fetchColumn();
     $app = [
         'csrf' => csrf_token(), 'today' => date('Y-m-d'), 'date' => tgl(date('Y-m-d')),
-        'admin' => ['nama' => h($adm['nama_admin']), 'username' => h($adm['username'])],
+        'admin' => ['nama' => h($adm['nama_user'] ?? $adm['nama_admin']), 'username' => h($adm['username'])],
         'badges' => ['pengaduan' => Pengaduan::stat()['baru'] ?: null, 'peminjaman' => $menunggu ?: null, 'pengembalian' => Peminjaman::belumKembali() ?: null],
     ];
 ?><!DOCTYPE html>

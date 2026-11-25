@@ -6,9 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userLama = trim($_POST['username'] ?? ''); $pw = $_POST['password'] ?? '';
     if (!csrf_ok($_POST['csrf'] ?? null)) { $err = 'Sesi kedaluwarsa. Muat ulang halaman lalu coba lagi.'; }
     elseif ($userLama === '' || $pw === '') { $err = 'Username dan password wajib diisi.'; }
-    elseif ($a = Admin::login($userLama, $pw)) {
+    elseif ($a = User::loginAdmin($userLama, $pw)) {
         session_regenerate_id(true);
-        $_SESSION['admin_id'] = (int)$a['id_admin'];
+        $_SESSION['admin_id'] = (int)$a['id_user'];
         redirect('dashboard.php');
     } else { $err = 'Username atau password salah.'; }
 }

@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../app/bootstrap.php'; require __DIR__ . '/partials.php'; admin_require();
-admin_open('Kelola Data Akun', ['mhs' => Mahasiswa::all(), 'adm' => Admin::all()]); ?>
+admin_open('Kelola Data Akun', ['mhs' => User::allMahasiswa(), 'adm' => User::allAdmin()]); ?>
 <script>
 shell({ active: 'akun', title: 'Kelola Data Akun' });
 const M = DATA.mhs, A = DATA.adm; let tab = 'm', q = '';

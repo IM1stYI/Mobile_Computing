@@ -20,7 +20,7 @@ Jika user/password MySQL berbeda, ubah `app/config.php` (file ini tidak ikut ke 
 
 ## Struktur
 ```
-app/            bootstrap.php (session, PDO, helper) + models/ (Mahasiswa, Admin, Pengaduan, Tanggapan, Peminjaman)
+app/            bootstrap.php (session, PDO, helper) + models/ (User, Pengaduan, Tanggapan, Peminjaman)
 database/       schema.sql (tabel + data contoh, aman dijalankan berulang)
 Meta_Sarpras_PWA/    halaman mahasiswa (view + controller per halaman)
 Meta_Sarpras_Admin/  halaman admin + api.php (controller aksi JSON)
@@ -28,5 +28,8 @@ uploads/        foto yang diunggah (tidak ikut ke GitHub)
 ```
 
 ## Tabel
-`mahasiswa`, `admin`, `pengaduan`, `tanggapan`, `peminjaman` (sesuai file MVC).
-Kolom tambahan di luar file MVC: `mahasiswa.password`, `peminjaman.jumlah`, `peminjaman.catatan_admin`.
+`user`, `pengaduan`, `tanggapan`, `peminjaman`.
+- Tabel `user` menggabungkan mahasiswa dan admin dengan kolom `role ENUM('admin', 'mahasiswa')`.
+- `pengaduan`: `id_user` (pelapor), `id_admin` (petugas yang konfirmasi/tindaklanjuti).
+- `peminjaman`: `id_user` (peminjam pengajuan & pengembalian), `id_admin` (petugas yang konfirmasi/tindaklanjuti).
+- `tanggapan`: `id_user` (user penanggap/admin).

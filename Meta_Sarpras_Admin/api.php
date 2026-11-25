@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') fail('Metode tidak diizinkan.', 405);
 if (!csrf_ok($_SERVER['HTTP_X_CSRF'] ?? null)) fail('Token keamanan tidak valid. Muat ulang halaman.', 403);
 $in = json_decode(file_get_contents('php://input') ?: '', true);
 if (!is_array($in)) fail('Data tidak valid.');
-$idA = (int)$adm['id_admin'];
+$idA = (int)$adm['id_user'];
 $str = fn(string $k) => trim((string)($in[$k] ?? ''));
 $int = fn(string $k) => (int)($in[$k] ?? 0);
 
@@ -57,21 +57,21 @@ try {
         if (!preg_match('/^\d{3,20}$/', $nim)) fail('NIM harus berupa angka (3–20 digit).');
         if ($nama === '' || mb_strlen($nama) > 100) fail('Nama lengkap wajib diisi (maksimal 100 karakter).');
         if (strlen($pw) < 6) fail('Password minimal 6 karakter.');
-        if (Mahasiswa::nimAda($nim)) fail('NIM sudah terdaftar.');
-        $id = Mahasiswa::create($nim, $nama, $pw);
+        if (User::nimAda($nim)) fail('NIM sudah terdaftar.');
+        $id = User::createMahasiswa($nim, $nama, $pw);
         out(['ok' => true, 'row' => h_deep(['id' => $id, 'nim' => $nim, 'nama' => $nama])]);
     }
 
     case 'akun.mhs.hapus': {
         $id = $int('id');
-        try { Mahasiswa::delete($id); }
+        try { User::delete($id); }
         catch (PDOException $e) { fail('Akun tidak dapat dihapus karena sudah memiliki data pengaduan atau peminjaman.'); }
         out(['ok' => true]);
     }
 
     case 'akun.mhs.reset': {
-        $id = $int('id'); if (!Mahasiswa::find($id)) fail('Akun tidak ditemukan.', 404);
-        Mahasiswa::resetPassword($id, 'password123');
+        $id = $int('id'); if (!User::find($id)) fail('Akun tidak ditemukan.', 404);
+        User::resetPassword($id, 'password123');
         out(['ok' => true]);
     }
 
@@ -80,14 +80,14 @@ try {
         if (!preg_match('/^[A-Za-z0-9_.-]{3,50}$/', $u)) fail('Username 3–50 karakter (huruf, angka, titik, strip, garis bawah).');
         if ($nama === '' || mb_strlen($nama) > 100) fail('Nama lengkap petugas wajib diisi.');
         if (strlen($pw) < 6) fail('Password minimal 6 karakter.');
-        if (Admin::usernameAda($u)) fail('Username sudah dipakai.');
-        $id = Admin::create($u, $nama, $pw);
+        if (User::usernameAda($u)) fail('Username sudah dipakai.');
+        $id = User::createAdmin($u, $nama, $pw);
         out(['ok' => true, 'row' => h_deep(['id' => $id, 'username' => $u, 'nama' => $nama])]);
     }
 
     case 'profil.nama': {
         $nama = $str('nama'); if ($nama === '' || mb_strlen($nama) > 100) fail('Nama lengkap wajib diisi (maksimal 100 karakter).');
-        Admin::updateNama($idA, $nama); out(['ok' => true, 'nama' => h($nama)]);
+        User::updateNama($idA, $nama); out(['ok' => true, 'nama' => h($nama)]);
     }
 
     case 'profil.password': {
@@ -95,7 +95,7 @@ try {
         if (!password_verify($lama, $adm['password'])) fail('Password saat ini salah.');
         if (strlen($baru) < 6) fail('Password baru minimal 6 karakter.');
         if ($baru === $lama) fail('Password baru harus berbeda dari yang lama.');
-        Admin::updatePassword($idA, $baru); out(['ok' => true]);
+        User::updatePassword($idA, $baru); out(['ok' => true]);
     }
 
     default: fail('Aksi tidak dikenal.');
