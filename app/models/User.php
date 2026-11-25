@@ -124,6 +124,10 @@ class User {
         db()->prepare('UPDATE user SET password=? WHERE id_user=?')->execute([password_hash($pw, PASSWORD_DEFAULT), $id]);
     }
 
+    static function updateFoto(int $id, ?string $foto): void {
+        db()->prepare('UPDATE user SET foto=? WHERE id_user=?')->execute([$foto, $id]);
+    }
+
     // Kompatibilitas untuk kode lama yang mungkin masih memanggil Mahasiswa::... atau Admin::...
     static function all(): array { return self::allMahasiswa(); }
     static function count(): int { return self::countMahasiswa(); }

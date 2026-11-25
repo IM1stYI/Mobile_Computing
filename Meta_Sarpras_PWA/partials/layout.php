@@ -19,13 +19,21 @@ function pwa_open(string $title): void { ?>
 <?php include __DIR__ . '/sprite.php';
 }
 
+function pwa_avatar_html(array $u): string {
+    $foto = $u['foto'] ?? null;
+    if ($foto && is_file(UPLOAD_DIR . $foto)) {
+        return '<img src="' . h(foto_url($foto)) . '" alt="Foto ' . h($u['nama_mahasiswa']) . '">';
+    }
+    return h(inisial($u['nama_mahasiswa']));
+}
+
 /** $mode: 'dark' (judul + subjudul) atau 'back' (tombol kembali) */
 function pwa_header(array $u, string $judul, string $mode = 'back', string $kecil = '', string $kembali = 'beranda.php'): void { ?>
   <div class="wrap">
     <header<?= $mode === 'dark' ? ' class="dark"' : '' ?>>
       <div class="in"><a class="logo" href="beranda.php"><img src="logo.png" alt="Politeknik Meta Industri Cikarang"></a>
         <?php if ($mode === 'back'): ?><a class="back" href="<?= h($kembali) ?>" aria-label="Kembali"><svg><use href="#back" /></svg></a><?php endif; ?>
-        <h1><?= h($judul) ?><?= $kecil ? '<small>' . h($kecil) . '</small>' : '' ?></h1><a class="avatar" href="profil.php" title="Profil Mahasiswa"><?= h(inisial($u['nama_mahasiswa'])) ?></a>
+        <h1><?= h($judul) ?><?= $kecil ? '<small>' . h($kecil) . '</small>' : '' ?></h1><a class="avatar" href="profil.php" title="Profil Mahasiswa"><?= pwa_avatar_html($u) ?></a>
       </div>
     </header>
 <?php }

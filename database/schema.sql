@@ -24,6 +24,7 @@ CREATE TABLE `user` (
   `password` VARCHAR(255) NOT NULL,
   `nama_user` VARCHAR(100) NOT NULL,
   `nim` VARCHAR(20) NULL UNIQUE,
+  `foto` VARCHAR(255) NULL DEFAULT NULL,
   `role` ENUM('admin', 'mahasiswa') NOT NULL DEFAULT 'mahasiswa'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

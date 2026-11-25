@@ -10,6 +10,10 @@ const esc = t => String(t).replace(/[&<>"']/g, c => ({
     "'": '&#39;'
 }[c]));
 
+const avatarHtml = (url, nama = 'Admin') => url
+    ? `<img src="${esc(url)}" alt="Foto ${esc(nama)}">`
+    : '🛡️';
+
 const MENU = [
     ['Ringkasan', [
         ['dashboard', '', 'Dashboard Utama', 'dashboard.php']
@@ -102,7 +106,7 @@ function shell(o) {
                         aria-expanded="false"
                         aria-haspopup="true"
                     >
-                        <div class="user-avatar">🛡️</div>
+                        <div class="user-avatar" id="hdrAvatar">${avatarHtml(P.foto_url, P.nama)}</div>
 
                         <span class="user-name">
                             ${esc(P.nama)}
@@ -205,16 +209,17 @@ function toast(m) {
     }, 2600);
 }
 
-/* Kirim aksi ke api.php */
+/* Kirim aksi ke api.php (mendukung JSON maupun FormData) */
 async function api(action, data = {}) {
+    const isForm = data instanceof FormData;
+    if (isForm) data.set('action', action);
     try {
         const r = await fetch('api.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF': APP.csrf
-            },
-            body: JSON.stringify({
+            headers: isForm
+                ? { 'X-CSRF': APP.csrf }
+                : { 'Content-Type': 'application/json', 'X-CSRF': APP.csrf },
+            body: isForm ? data : JSON.stringify({
                 action,
                 ...data
             })
@@ -362,9 +367,9 @@ function returnModal(x, o) {
                 <span>✅</span>
                 <span>
                     ${c.n > 0
-                        ? `Terlambat ${c.n} hari, belum mencapai batas minimal 3 hari. Bebas denda otomatis`
-                        : 'Pengembalian tepat waktu sebelum atau pada tanggal jatuh tempo. Bebas denda otomatis'
-                    }
+            ? `Terlambat ${c.n} hari, belum mencapai batas minimal 3 hari. Bebas denda otomatis`
+            : 'Pengembalian tepat waktu sebelum atau pada tanggal jatuh tempo. Bebas denda otomatis'
+        }
                     (Admin dapat mengisi denda manual di bawah).
                 </span>
             </div>
@@ -416,11 +421,11 @@ function returnModal(x, o) {
 
             <select id="rk">
                 ${[
-                    'Baik (Utuh, Bersih, dan Berfungsi Normal)',
-                    'Rusak Ringan (Masih Berfungsi)',
-                    'Rusak Berat',
-                    'Hilang'
-                ].map(k => `
+                'Baik (Utuh, Bersih, dan Berfungsi Normal)',
+                'Rusak Ringan (Masih Berfungsi)',
+                'Rusak Berat',
+                'Hilang'
+            ].map(k => `
                     <option ${k == x.kond ? 'selected' : ''}>
                         ${k}
                     </option>

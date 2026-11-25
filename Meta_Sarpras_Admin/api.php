@@ -8,8 +8,9 @@ function fail(string $m, int $code = 400): never { out(['ok' => false, 'msg' => 
 $adm = admin_user();
 if (!$adm) fail('Sesi berakhir. Silakan login ulang.', 401);
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') fail('Metode tidak diizinkan.', 405);
-if (!csrf_ok($_SERVER['HTTP_X_CSRF'] ?? null)) fail('Token keamanan tidak valid. Muat ulang halaman.', 403);
-$in = json_decode(file_get_contents('php://input') ?: '', true);
+if (!csrf_ok($_SERVER['HTTP_X_CSRF'] ?? ($_POST['csrf'] ?? null))) fail('Token keamanan tidak valid. Muat ulang halaman.', 403);
+$isMultipart = str_contains($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data');
+$in = $isMultipart ? $_POST : json_decode(file_get_contents('php://input') ?: '', true);
 if (!is_array($in)) fail('Data tidak valid.');
 $idA = (int)$adm['id_user'];
 $str = fn(string $k) => trim((string)($in[$k] ?? ''));
@@ -96,6 +97,31 @@ try {
         if (strlen($baru) < 6) fail('Password baru minimal 6 karakter.');
         if ($baru === $lama) fail('Password baru harus berbeda dari yang lama.');
         User::updatePassword($idA, $baru); out(['ok' => true]);
+    }
+
+    case 'profil.foto': {
+        $fotoLama = $adm['foto'] ?? null;
+        if (!empty($in['hapus'])) {
+            User::updateFoto($idA, null);
+            if ($fotoLama && is_file(UPLOAD_DIR . $fotoLama)) @unlink(UPLOAD_DIR . $fotoLama);
+            out(['ok' => true, 'foto_url' => null, 'msg' => 'Foto profil berhasil dihapus.']);
+        }
+        try {
+            $fotoBaru = upload_foto('foto');
+        } catch (RuntimeException $e) {
+            fail($e->getMessage(), 400);
+        }
+        if (!$fotoBaru) fail('Pilih file foto terlebih dahulu.');
+        try {
+            User::updateFoto($idA, $fotoBaru);
+        } catch (Throwable $t) {
+            if (is_file(UPLOAD_DIR . $fotoBaru)) @unlink(UPLOAD_DIR . $fotoBaru);
+            throw $t;
+        }
+        if ($fotoLama && $fotoLama !== $fotoBaru && is_file(UPLOAD_DIR . $fotoLama)) {
+            @unlink(UPLOAD_DIR . $fotoLama);
+        }
+        out(['ok' => true, 'foto_url' => foto_url($fotoBaru), 'msg' => 'Foto profil berhasil diperbarui.']);
     }
 
     default: fail('Aksi tidak dikenal.');

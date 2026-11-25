@@ -2,10 +2,18 @@
 /** Kerangka halaman admin (View). APP = konfigurasi, DATA = data dari database. */
 function admin_open(string $title, array $data = [], string $head = ''): void {
     $adm = admin_user();
+    $nama = $adm['nama_user'] ?? $adm['nama_admin'];
+    $foto = $adm['foto'] ?? null;
+    $hasFoto = !empty($foto) && is_file(UPLOAD_DIR . $foto);
     $menunggu = (int) db()->query("SELECT COUNT(*) FROM peminjaman WHERE status_peminjaman='Menunggu Konfirmasi'")->fetchColumn();
     $app = [
         'csrf' => csrf_token(), 'today' => date('Y-m-d'), 'date' => tgl(date('Y-m-d')),
-        'admin' => ['nama' => h($adm['nama_user'] ?? $adm['nama_admin']), 'username' => h($adm['username'])],
+        'admin' => [
+            'nama' => h($nama),
+            'username' => h($adm['username']),
+            'foto_url' => $hasFoto ? foto_url($foto) : null,
+            'inisial' => h(inisial($nama)),
+        ],
         'badges' => ['pengaduan' => Pengaduan::stat()['baru'] ?: null, 'peminjaman' => $menunggu ?: null, 'pengembalian' => Peminjaman::belumKembali() ?: null],
     ];
 ?><!DOCTYPE html>

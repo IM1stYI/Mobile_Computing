@@ -7,6 +7,14 @@
         <path d="M4 8h3l1.5-2h7L17 8h3v11H4z" />
         <circle cx="12" cy="13" r="3.5" />
       </symbol>
+      <symbol id="img" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="16" rx="2.5" />
+        <circle cx="8.5" cy="9.5" r="1.5" />
+        <path d="M21 15l-5-5L5 20" />
+      </symbol>
+      <symbol id="trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+      </symbol>
       <symbol id="shield" viewBox="0 0 24 24">
         <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" />
         <path d="M9 12l2 2 4-4" />
